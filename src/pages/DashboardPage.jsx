@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 
 const DashboardPage = () => {
   const { alerts, loading, fetchAlerts } = useAlerts();
-  const { station } = useAuth();
+  const { healthCenter } = useAuth();  // ✅ FIXED: Changed from 'station' to 'healthCenter'
   const [filter, setFilter] = useState('all'); // all, pending, acknowledged, resolved
   const [refreshing, setRefreshing] = useState(false);
 
@@ -52,7 +52,7 @@ const DashboardPage = () => {
                 Emergency Alerts Dashboard
               </h1>
               <p className="text-gray-600">
-                Monitoring alerts for {station?.centerName}
+                Monitoring alerts for {healthCenter?.centerName}
               </p>
             </div>
             <button
@@ -93,11 +93,10 @@ const DashboardPage = () => {
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    filter === status
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === status
                       ? 'bg-primary-600 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-100'
-                  }`}
+                    }`}
                 >
                   {status.charAt(0).toUpperCase() + status.slice(1)}
                 </button>

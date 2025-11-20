@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const MapViewPage = () => {
   const { alertId } = useParams();
   const navigate = useNavigate();
-  const { station } = useAuth();
+  const { healthCenter } = useAuth();  // ✅ FIXED: Changed from 'station' to 'healthCenter'
   const { alerts } = useAlerts();
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ const MapViewPage = () => {
   useEffect(() => {
     console.log('🔍 MapViewPage - Looking for alert:', alertId);
     console.log('Available alerts:', alerts);
-    console.log('Station data:', station);
+    console.log('Health Center data:', healthCenter);  // ✅ Changed log message
 
     // Find the alert from the alerts context
     const foundAlert = alerts.find((a) => a._id === alertId);
@@ -33,16 +33,16 @@ const MapViewPage = () => {
       toast.error('Alert not found');
       setLoading(false);
     }
-  }, [alertId, alerts, station]);
+  }, [alertId, alerts, healthCenter]);  // ✅ Changed dependency
 
   const handleGetDirections = () => {
     console.log('🔍 Get Directions clicked from MapView');
-    console.log('Station:', station);
+    console.log('Health Center:', healthCenter);  // ✅ Changed log message
     console.log('Alert:', alert);
 
-    if (!station) {
-      console.error('❌ No station data');
-      toast.error('Station information not available');
+    if (!healthCenter) {  // ✅ Changed from 'station'
+      console.error('❌ No health center data');
+      toast.error('Health center information not available');  // ✅ Changed message
       return;
     }
 
@@ -52,14 +52,14 @@ const MapViewPage = () => {
       return;
     }
 
-    // ✅ Get station coordinates - support multiple formats
+    // ✅ Get health center coordinates - support multiple formats
     let stationLat, stationLng;
-    if (station.location) {
-      stationLat = station.location.lat;
-      stationLng = station.location.lng;
-    } else if (station.lat && station.lng) {
-      stationLat = station.lat;
-      stationLng = station.lng;
+    if (healthCenter.location) {  // ✅ Changed from 'station'
+      stationLat = healthCenter.location.lat;
+      stationLng = healthCenter.location.lng;
+    } else if (healthCenter.lat && healthCenter.lng) {  // ✅ Changed from 'station'
+      stationLat = healthCenter.lat;
+      stationLng = healthCenter.lng;
     }
 
     // ✅ Get alert coordinates - support multiple formats
@@ -73,14 +73,14 @@ const MapViewPage = () => {
     }
 
     console.log('📍 Extracted coordinates:', {
-      station: { lat: stationLat, lng: stationLng },
+      healthCenter: { lat: stationLat, lng: stationLng },  // ✅ Changed log message
       alert: { lat: userLat, lng: userLng }
     });
 
     // Validate all coordinates exist
     if (!stationLat || !stationLng) {
-      console.error('❌ Station coordinates missing');
-      toast.error('Station location not available');
+      console.error('❌ Health center coordinates missing');  // ✅ Changed message
+      toast.error('Health center location not available');  // ✅ Changed message
       return;
     }
 
@@ -97,7 +97,7 @@ const MapViewPage = () => {
     toast.success('Opening Google Maps...');
   };
 
-  // ✅ NEW: Handle phone call
+  // ✅ Handle phone call
   const handleCallUser = () => {
     const phoneNumber = alert?.userPhone || alert?.phone;
     
@@ -125,15 +125,15 @@ const MapViewPage = () => {
     return null;
   };
 
-  // Helper to get station coordinates
+  // Helper to get health center coordinates
   const getStationLocation = () => {
-    if (!station) return null;
+    if (!healthCenter) return null;  // ✅ Changed from 'station'
     
-    if (station.location) {
-      return { lat: station.location.lat, lng: station.location.lng };
+    if (healthCenter.location) {  // ✅ Changed from 'station'
+      return { lat: healthCenter.location.lat, lng: healthCenter.location.lng };
     }
-    if (station.lat && station.lng) {
-      return { lat: station.lat, lng: station.lng };
+    if (healthCenter.lat && healthCenter.lng) {  // ✅ Changed from 'station'
+      return { lat: healthCenter.lat, lng: healthCenter.lng };
     }
     return null;
   };
@@ -233,61 +233,44 @@ const MapViewPage = () => {
                   <br />
                   Lng: {alertLocation.lng.toFixed(6)}
                 </p>
+                {distance && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    📍 {distance} km from your health center
+                  </p>
+                )}
               </div>
             ) : (
-              <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-                <h3 className="text-sm font-semibold text-red-700 mb-2">⚠️ Location Error</h3>
-                <p className="text-sm text-red-600">
-                  Emergency location coordinates are missing from this alert.
-                </p>
+              <div className="bg-red-50 rounded-lg p-4">
+                <p className="text-sm text-red-600">⚠️ Location coordinates unavailable</p>
               </div>
             )}
 
-            {/* ✅ NEW: Caller Contact Info */}
+            {/* Call Patient Button */}
             {userPhone && (
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <h3 className="text-sm font-semibold text-blue-700 mb-3">Caller Information</h3>
-                <div className="space-y-3">
+              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                <h3 className="text-sm font-semibold text-green-700 mb-2">Caller Information</h3>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Phone Number</p>
-                    <p className="text-lg text-gray-900 font-mono font-semibold">{userPhone}</p>
+                    <p className="text-sm text-gray-700">Phone Number:</p>
+                    <p className="text-lg text-gray-900 font-mono">{userPhone}</p>
                   </div>
                   <button
                     onClick={handleCallUser}
-                    className="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors"
+                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                    title="Call Patient"
                   >
                     <Phone className="w-5 h-5" />
-                    <span>Call Caller</span>
+                    <span>Call</span>
                   </button>
                 </div>
               </div>
             )}
 
-            {station && stationLocation ? (
-              <>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Your Station</h3>
-                  <p className="text-sm text-gray-900">{station.centerName}</p>
-                  <p className="text-xs text-gray-600 mt-1 font-mono">
-                    Lat: {stationLocation.lat.toFixed(6)}
-                    <br />
-                    Lng: {stationLocation.lng.toFixed(6)}
-                  </p>
-                </div>
-
-                {distance && (
-                  <div className="bg-primary-50 rounded-lg p-4">
-                    <h3 className="text-sm font-semibold text-primary-700 mb-2">
-                      Distance to Alert
-                    </h3>
-                    <p className="text-2xl font-bold text-primary-900">{distance} km</p>
-                  </div>
-                )}
-              </>
-            ) : (
+            {/* Health Center Info */}
+            {!stationLocation && (
               <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
                 <h3 className="text-sm font-semibold text-yellow-700 mb-2">⚠️ Station Info</h3>
-                <p className="text-sm text-yellow-600">
+                <p className="text-sm text-yellow-800">
                   Station location not available. Please update your profile.
                 </p>
               </div>
