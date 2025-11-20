@@ -5,7 +5,7 @@ import { Shield, Bell, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { station, logout } = useAuth();
+  const { healthCenter, logout } = useAuth(); // ✅ Changed from 'station' to 'healthCenter'
   const { unreadCount } = useAlerts();
 
   const handleLogout = () => {
@@ -19,7 +19,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
-            <Shield className="w-8 h-8 text-green-600  " />
+            <Shield className="w-8 h-8 text-green-600" />
             <div>
               <h1 className="text-xl font-bold text-green-900">RapidAid</h1>
               <p className="text-xs text-green-500">Health Center Dashboard</p>
@@ -27,13 +27,13 @@ const Navbar = () => {
           </div>
 
           {/* Station Info */}
-          {station && (
+          {healthCenter && ( // ✅ Changed from 'station' to 'healthCenter'
             <div className="hidden md:flex items-center space-x-6">
               <div className="text-right">
                 <p className="text-sm font-semibold text-gray-900">
-                  {station.centerName}
+                  {healthCenter.centerName} {/* ✅ Changed from station.centerName */}
                 </p>
-                <p className="text-xs text-gray-500">{station.phone}</p>
+                <p className="text-xs text-gray-500">{healthCenter.phone}</p> {/* ✅ Changed from station.phone */}
               </div>
 
               {/* Alert Bell */}
@@ -44,7 +44,7 @@ const Navbar = () => {
                 >
                   <Bell className="w-6 h-6 text-gray-600" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-danger-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
                       {unreadCount}
                     </span>
                   )}
@@ -63,12 +63,12 @@ const Navbar = () => {
           )}
 
           {/* Mobile Menu */}
-          {station && (
+          {healthCenter && ( // ✅ Changed from 'station' to 'healthCenter'
             <div className="flex md:hidden items-center space-x-4">
               <div className="relative">
                 <Bell className="w-6 h-6 text-gray-600" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-danger-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {unreadCount}
                   </span>
                 )}
