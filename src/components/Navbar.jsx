@@ -19,10 +19,10 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
-            <Shield className="w-8 h-8 text-primary-600" />
+            <Shield className="w-8 h-8 text-green-600  " />
             <div>
-              <h1 className="text-xl font-bold text-gray-900">RapidAid</h1>
-              <p className="text-xs text-gray-500">Health Center Dashboard</p>
+              <h1 className="text-xl font-bold text-green-900">RapidAid</h1>
+              <p className="text-xs text-green-500">Health Center Dashboard</p>
             </div>
           </div>
 
