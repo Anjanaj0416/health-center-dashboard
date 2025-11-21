@@ -55,12 +55,25 @@ export const updateFCMToken = async (phone, fcmToken) => {
   }
 };
 
-// Get all alerts (filtered by type=ambulance)
-// Get all alerts (filtered by type=ambulance)
+/**
+ * ✅ FIXED: Get AMBULANCE alerts for THIS SPECIFIC center only
+ */
 export const getAlerts = async () => {
   try {
-    console.log('📡 Fetching ambulance alerts...');
-    const response = await api.get(API_ENDPOINTS.HEALTH_ALERTS);
+    console.log('📡 Fetching ambulance alerts for this health center...');
+    
+    // Get the logged-in center's data
+    const centerData = localStorage.getItem(STORAGE_KEYS.CENTER_DATA);
+    
+    if (!centerData) {
+      throw new Error('Center data not found. Please log in again.');
+    }
+    
+    const center = JSON.parse(centerData);
+    const centerId = center.id;
+    
+    // ✅ CRITICAL FIX: Filter alerts by this center's ID to only get alerts assigned to THIS center
+    const response = await api.get(`/alerts/station/${centerId}?type=ambulance`);
     console.log('📦 Alerts response:', response.data);
     return response.data;
   } catch (error) {
